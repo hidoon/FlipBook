@@ -61,9 +61,12 @@ extension View {
     }
     
     func fb_makeViewSnapshot() -> Image? {
-        UIGraphicsImageRenderer(size: bounds.size).image { rendererContext in
-            drawHierarchy(in: bounds, afterScreenUpdates: false)
-        }
+        UIGraphicsBeginImageContextWithOptions(frame.size, true, 0)
+        guard let context = UIGraphicsGetCurrentContext() else { return nil }
+        layer.presentation()?.render(in: context)
+        let rasterizedView = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return rasterizedView
     }
 }
 #endif
